@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok UGC Video Script Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FE2C55;
+            --secondary: #25F4EE;
+            --dark: #121212;
+            --light: #F8F8F8;
+        }
+        
+        body {
+            background-color: var(--light);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        .tiktok-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .tiktok-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .tiktok-gradient {
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+        }
+        
+        .tiktok-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(254, 44, 85, 0.2);
+        }
+        
+        .tiktok-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(254, 44, 85, 0.25);
+        }
+        
+        .tab-active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background-color: rgba(254, 44, 85, 0.05);
+        }
+        
+        .trend-tag {
+            background-color: #f2f2f2;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            margin: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .trend-tag:hover, .trend-tag.selected {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .trend-tag svg {
+            margin-right: 6px;
+        }
+        
+        .timeline-table th, .timeline-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        
+        .timeline-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(37, 244, 238, 0.15);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            background-color: #f9f9f9;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            background-color: white;
+            transform: translateY(-1px);
+        }
+        
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        
+        .custom-checkbox input {
+            display: none;
+        }
+        
+        .checkbox-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid #e5e5e5;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .custom-checkbox input:checked + .checkbox-icon {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .custom-checkbox input:checked + .checkbox-icon svg {
+            display: block;
+        }
+        
+        .checkbox-icon svg {
+            display: none;
+            color: white;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        /* New styles for enhanced UI/UX */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .scale-hover:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .feature-card:hover {
+            border-left: 3px solid var(--primary);
+            background-color: rgba(254, 44, 85, 0.03);
+        }
+        
+        .btn-3d {
+            position: relative;
+            top: 0;
+            transition: top 0.3s ease;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        
+        .btn-3d:hover {
+            top: -2px;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+        }
+        
+        .api-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .api-tab:hover:not(.tab-active) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-0">
+    <!-- Header Logo -->
+    <div class="tiktok-gradient text-white text-center py-4 px-8 rounded-2xl w-64 mx-auto mt-6 mb-2 flex items-center justify-center shadow-lg transform hover:scale-105 transition-all duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" class="mr-3">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+        </svg>
+        <span class="text-lg font-bold">TikTok Ai Tools</span>
+    </div>
+    
+    <div class="max-w-5xl mx-auto mt-2">
+        <!-- API Key Input Section -->
+        <div id="apiKeySection" class="mb-6 p-4 bg-white rounded-xl shadow-sm">
+            <div class="mb-4">
+                <div class="flex items-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 mr-2">
+                        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                    </svg>
+                    <h2 class="text-lg font-medium">API Key</h2>
+                </div>
+            
+        <!-- Order Jasa Tab Content -->
+        <div id="content-order" class="hidden">
+            <div class="bg-white rounded-2xl shadow-md p-6 mb-6 hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Tempah Perkhidmatan Pembuatan Video TikTok UGC
+                </h2>
+                <p class="text-gray-600 mb-8 text-lg">Kami menyediakan perkhidmatan pembuatan video TikTok UGC berkualiti tinggi untuk meningkatkan engagement dan penukaran produk anda.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#FE2C55] to-[#C42548] flex items-center justify-center text-white shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15.6 11.6L22 7v10l-6.4-4.5v-1zm-7.8 0v1L1.4 17V7l6.4 4.6z"></path>
+                                    <rect x="1" y="3" width="21" height="18" rx="2" ry="2"></rect>
+                                </svg>
+                            </div>
+                            <h3 class="ml-4 font-bold text-xl text-gray-800">Paket Basic</h3>
+                        </div>
+                        <ul class="space-y-3 mb-6 pl-4">
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1 flex-shrink-0">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span class="text-gray-700">1 Video TikTok UGC (30 detik)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1 flex-shrink-0">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span class="text-gray-700">Script & Storyboard</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1 flex-shrink-0">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span class="text-gray-700">1x Revisi</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <a href="https://roketmarket.com" target="_blank" class="inline-block bg-gradient-to-r from-[#25F4EE] to-[#FE2C55] text-white py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300 font-medium transform hover:-translate-y-1">
+                                Order Sekarang
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#25F4EE] to-[#17B1AD] flex items-center justify-center text-white shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                </svg>
+                            </div>
+                            <h3 class="ml-4 font-bold text-xl text-gray-800">Paket Premium</h3>
+                        </div>
+                        <ul class="space-y-3 mb-6 pl-4">
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25F4EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1 flex-shrink-0">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span class="text-gray-700">3 Video TikTok UGC (30-60 detik)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25F4EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1 flex-shrink-0">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span class="text-gray-700">Script, Storyboard & Trendy Music</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25F4EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1 flex-shrink-0">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span class="text-gray-700">Unlimited Revisi (3 hari)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25F4EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1 flex-shrink-0">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span class="text-gray-700">Visual Effect & Motion Graphics</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <a href="https://roketmarket.com" target="_blank" class="inline-block bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300 font-medium transform hover:-translate-y-1">
+                                Order Sekarang
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 mb-6">
+                    <h3 class="font-bold text-lg mb-3 text-blue-700">Custom Project?</h3>
+                    <p class="text-blue-600 mb-4">Butuh paket khusus untuk kebutuhan bisnis Anda? Kami menyediakan layanan konsultasi dan pembuatan konten TikTok UGC sesuai kebutuhan spesifik produk dan target audience Anda.</p>
+                    <div class="text-center">
+                        <a href="https://roketmarket.com" target="_blank" class="inline-block bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300 font-medium transform hover:-translate-y-1">
+                            Konsultasi Gratis
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="border-t pt-6">
+                    <h3 class="font-bold text-lg mb-3">Mengapa Memilih Jasa Kami?</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 mr-2 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium mb-1">Creator Berpengalaman</h4>
+                                <p class="text-sm text-gray-600">Tim creator profesional dengan pengalaman di platform TikTok</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 mr-2 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium mb-1">Jaminan Kualitas</h4>
+                                <p class="text-sm text-gray-600">Hasil video berkualitas tinggi dengan storytelling yang menarik</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 mr-2 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium mb-1">Pengiriman Cepat</h4>
+                                <p class="text-sm text-gray-600">Proses pengerjaan cepat dengan kualitas terjamin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+                <!-- Tab Navigation for API Selection -->
+                <div class="flex border-b mb-4">
+                    <div id="tab-openai" class="tab-active flex items-center py-2 px-4 font-medium cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="4"></circle>
+                        </svg>
+                        OpenAI
+                    </div>
+                    <div id="tab-gemini" class="text-gray-500 flex items-center py-2 px-4 font-medium cursor-pointer hover:text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        Gemini (OpenRouter)
+                    </div>
+                </div>
+                
+                <!-- OpenAI API Key Input -->
+                <div id="content-openai" class="api-input-section">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-sm font-semibold text-gray-700">OpenAI API Key</label>
+                        <div id="openai-connection-status">
+                            <span id="openai-status-badge" class="bg-gray-200 text-gray-600 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+                                Tidak Bersambung
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex w-full">
+                        <input type="password" id="openai-api-key-input" placeholder="Masukkan API key OpenAI anda" 
+                               class="flex-grow form-input rounded-l-xl rounded-r-none border-r-0 py-3 px-4 bg-gray-50 shadow-sm" />
+                        <button id="openai-connect-btn" class="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium py-3 px-6 rounded-r-xl transition-all duration-300 hover:shadow-lg btn-3d">
+                            Sambung
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Dapatkan API key di <a href="https://platform.openai.com/api-keys" target="_blank" class="text-blue-600 hover:underline font-medium">platform.openai.com/api-keys</a></p>
+                </div>
+                
+                <!-- Gemini (OpenRouter) API Key Input -->
+                <div id="content-gemini" class="api-input-section hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-sm font-semibold text-gray-700">OpenRouter API Key (Gemini)</label>
+                        <div id="gemini-connection-status">
+                            <span id="gemini-status-badge" class="bg-gray-200 text-gray-600 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+                                Tidak Terhubung
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex w-full">
+                        <input type="password" id="gemini-api-key-input" placeholder="Masukkan API key OpenRouter anda" 
+                               class="flex-grow form-input rounded-l-xl rounded-r-none border-r-0 py-3 px-4 bg-gray-50 shadow-sm" />
+                        <button id="gemini-connect-btn" class="bg-gradient-to-r from-purple-500 to-purple-700 text-white font-medium py-3 px-6 rounded-r-xl transition-all duration-300 hover:shadow-lg btn-3d">
+                            Sambung
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Dapatkan API key di <a href="https://openrouter.ai/keys" target="_blank" class="text-blue-600 hover:underline font-medium">openrouter.ai/keys</a></p>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mt-2">
+                <p class="text-sm text-gray-500 italic">API key disimpan secara tempatan di pelayar anda dan tidak dihantar ke pelayan kami.</p>
+                <p id="active-api-info" class="text-sm font-semibold px-3 py-1 bg-green-50 text-green-700 rounded-lg shadow-sm hidden">
+                    API Aktif: <span id="active-api-name" class="font-bold">-</span>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Main Title -->
+        <h2 class="text-3xl md:text-4xl font-bold text-center my-4">Penjana Skrip Video</h2>
+        <p class="text-gray-600 text-center mb-6">Buat skrip video TikTok UGC yang viral dengan mudah</p>
+        
+        <div class="tiktok-card p-6 mb-8">
+            <!-- Tab Navigation -->
+            <div class="flex border-b mb-6 bg-gray-50 rounded-lg p-1 shadow-sm">
+                <div id="tab-generator" class="tab-active flex items-center py-3 px-5 font-medium cursor-pointer rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="M15.6 11.6L22 7v10l-6.4-4.5v-1zm-7.8 0v1L1.4 17V7l6.4 4.6z"></path>
+                        <rect x="1" y="3" width="21" height="18" rx="2" ry="2"></rect>
+                    </svg>
+                    Generator
+                </div>
+                <div id="tab-trends" class="text-gray-500 flex items-center py-3 px-5 font-medium cursor-pointer hover:text-gray-700 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    Trends
+                </div>
+                <div id="tab-order" class="text-gray-500 flex items-center py-3 px-5 font-medium cursor-pointer hover:text-gray-700 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Order Jasa
+                </div>
+                <div id="tab-bantuan" class="text-gray-500 flex items-center py-3 px-5 font-medium cursor-pointer hover:text-gray-700 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Bantuan
+                </div>
+            </div>
+            
+            <!-- Content Containers -->
+            <div id="content-generator" class="block">
+            
+            <!-- TikTok Trends Section -->
+            <div class="mb-8">
+                <h2 class="flex items-center text-lg font-semibold mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-pink-500">
+                        <path d="M18 6L6 18"></path>
+                        <path d="M6 6l12 12"></path>
+                    </svg>
+                    TikTok Trends
+                </h2>
+                
+                <div class="flex flex-wrap mb-2" id="trendTags">
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                        </svg>
+                        POV
+                    </div>
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="15" y1="10" x2="3" y2="10"></line>
+                            <line x1="21" y1="6" x2="9" y2="6"></line>
+                            <line x1="21" y1="14" x2="9" y2="14"></line>
+                            <line x1="15" y1="18" x2="3" y2="18"></line>
+                        </svg>
+                        Transisi
+                    </div>
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                        </svg>
+                        Voiceover
+                    </div>
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                        Day in the Life
+                    </div>
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="4" x2="12" y2="20"></line>
+                            <rect x="3" y="4" width="18" height="6" rx="2"></rect>
+                            <rect x="3" y="14" width="18" height="6" rx="2"></rect>
+                        </svg>
+                        Before & After
+                    </div>
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            <path d="M18 13l-3-3"></path>
+                            <path d="M15 10l-3 3"></path>
+                        </svg>
+                        Reviews
+                    </div>
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                            <line x1="4" y1="22" x2="4" y2="15"></line>
+                        </svg>
+                        Storytime
+                    </div>
+                    <div class="trend-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                        </svg>
+                        Unboxing
+                    </div>
+                </div>
+                
+                <textarea id="customTrendInput" class="form-input" rows="2" placeholder="Tambahkan tren kustom (pisahkan dengan koma)"></textarea>
+            </div>
+            
+            <!-- Form Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Left Column -->
+                <div>
+                    <div class="mb-6">
+                        <label class="block font-medium mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Tempoh Video:
+                        </label>
+                        <select id="durationSelect" class="form-input">
+                            <option value="10">10 saat</option>
+                            <option value="15">15 saat</option>
+                            <option value="30" selected>30 saat</option>
+                            <option value="45">45 saat</option>
+                            <option value="60">60 saat</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block font-medium mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                            </svg>
+                            Jenis Produk/Perkhidmatan:
+                        </label>
+                        <input type="text" id="productInput" class="form-input" placeholder="Contoh: Penjagaan Kulit, Kursus Dalam Talian, dll">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block font-medium mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Sasaran Pasaran:
+                        </label>
+                        <input type="text" id="targetInput" class="form-input" placeholder="Contoh: Suri rumah, Profesional muda, dll">
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div>
+                    <div class="mb-6">
+                        <label class="block font-medium mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                            Gaya Bahasa:
+                        </label>
+                        <select id="styleSelect" class="form-input">
+                            <option value="akrab_persuasif">Mesra + Persuasif</option>
+                            <option value="santai_humor">Santai + Humor</option>
+                            <option value="inspiratif_emosional">Inspiratif + Emosional</option>
+                            <option value="profesional_informasional">Profesional + Informatif</option>
+                            <option value="urgent_persuasif">Mendesak + Persuasif</option>
+                            <option value="bersahabat_emosional">Bersahabat + Emosional</option>
+                            <option value="humoris_akrab">Humoris + Mesra</option>
+                            <option value="informasional_persuasif">Informatif + Persuasif</option>
+                            <option value="santai_inspiratif">Santai + Inspiratif</option>
+                            <option value="urgent_humor">Mendesak + Humor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block font-medium mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Penerangan Produk:
+                        </label>
+                        <textarea id="descriptionInput" class="form-input" rows="4" placeholder="Jelaskan:&#10;- Faedah utama&#10;- Ciri-ciri unggulan&#10;- Masalah yang diselesaikan&#10;- Promo/Harga"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Script Elements -->
+            <div class="mb-8">
+                <label class="block font-medium mb-3 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="M4 11a9 9 0 0 1 9 9"></path>
+                        <path d="M4 4a16 16 0 0 1 16 16"></path>
+                        <circle cx="5" cy="19" r="1"></circle>
+                    </svg>
+                    Elemen Skrip:
+                </label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="scriptElement" value="hook" checked>
+                        <span class="checkbox-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        Hook/Pembukaan
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="scriptElement" value="problem" checked>
+                        <span class="checkbox-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        Pernyataan Masalah
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="scriptElement" value="solution" checked>
+                        <span class="checkbox-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        Penyelesaian
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="scriptElement" value="features" checked>
+                        <span class="checkbox-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        Ciri-ciri/Faedah
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="scriptElement" value="social_proof" checked>
+                        <span class="checkbox-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        Bukti Sosial
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="scriptElement" value="cta" checked>
+                        <span class="checkbox-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        Call to Action
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Generate Button -->
+            <button id="generateBtn" class="w-full tiktok-gradient text-white py-4 rounded-xl hover:opacity-90 transition-all duration-300 tiktok-btn text-lg font-bold pulse-animation shadow-lg" disabled>
+                <span class="flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                    Generate Video Script
+                </span>
+            </button>
+            <p id="generateBtnDisabledMessage" class="text-center text-red-500 mt-3 font-medium">Harap hubungkan API Key terlebih dahulu</p>
+        </div>
+        
+        </div>
+            
+        <!-- Trends Tab Content -->
+        <div id="content-trends" class="hidden">
+            <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+                <h2 class="text-xl font-bold mb-4">Trend TikTok Terkini</h2>
+                <p class="text-gray-600 mb-6">Gunakan trend terkini untuk meningkatkan engagement dan keterlihatan kandungan UGC anda.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#FE2C55] flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                                </svg>
+                            </div>
+                            <h3 class="ml-3 font-bold text-lg">POV (Point of View)</h3>
+                        </div>
+                        <p class="text-gray-600">Creator berperan sebagai karakter dan menunjukkan perspektif tersebut. POV sangat efektif untuk menunjukkan masalah yang diselesaikan produk.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#25F4EE] flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                </svg>
+                            </div>
+                            <h3 class="ml-3 font-bold text-lg">Before & After</h3>
+                        </div>
+                        <p class="text-gray-600">Bandingkan kondisi sebelum dan sesudah menggunakan produk. Visual yang kuat ini sangat efektif untuk menunjukkan manfaat nyata produk.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#FE2C55] flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="15" y1="10" x2="3" y2="10"></line>
+                                    <line x1="21" y1="6" x2="9" y2="6"></line>
+                                    <line x1="21" y1="14" x2="9" y2="14"></line>
+                                    <line x1="15" y1="18" x2="3" y2="18"></line>
+                                </svg>
+                            </div>
+                            <h3 class="ml-3 font-bold text-lg">Transisi Kreatif</h3>
+                        </div>
+                        <p class="text-gray-600">Gunakan transisi yang menarik untuk menunjukkan perubahan atau transformasi. Transisi membuat video lebih dinamis dan menarik.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#25F4EE] flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                                </svg>
+                            </div>
+                            <h3 class="ml-3 font-bold text-lg">Storytelling</h3>
+                        </div>
+                        <p class="text-gray-600">Ceritakan kisah singkat yang relatable bagi audience. Format ini membangun koneksi emosional dan meningkatkan kemungkinan konversi.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="font-bold text-lg mb-3">Format Video UGC yang Trending</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Video "Get Ready With Me" (GRWM) sambil menjelaskan produk</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Top 3 alasan menggunakan produk dalam format listicle</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Video "Rahasia yang tidak diketahui banyak orang" tentang produk/niche</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Reaksi jujur saat pertama kali mencoba produk (first impression)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 mt-1">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Video "Expectation vs Reality" saat menggunakan produk</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+            
+        <!-- Bantuan Tab Content -->
+        <div id="content-bantuan" class="hidden">
+            <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+                <h2 class="text-xl font-bold mb-4">Panduan Membuat UGC yang Berkesan</h2>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold text-lg mb-3">Apa itu UGC?</h3>
+                    <p class="text-gray-600 mb-4">UGC (User Generated Content) ialah kandungan yang dihasilkan oleh pengguna atau pencipta yang kelihatan seperti kandungan organik. Format ini sangat berkesan untuk meningkatkan keyakinan dan penukaran kerana kelihatan lebih autentik berbanding iklan tradisional.</p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold text-lg mb-3">Tips Membuat UGC yang Menarik</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-[#FE2C55] flex items-center justify-center text-white mr-2 mt-0.5 flex-shrink-0">1</div>
+                            <span><strong>Hook yang kuat</strong> - Gunakan 3 saat pertama untuk menarik perhatian. Mulakan dengan tuntutan yang mengejutkan atau soalan yang menarik.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-[#FE2C55] flex items-center justify-center text-white mr-2 mt-0.5 flex-shrink-0">2</div>
+                            <span><strong>Pain point yang jelas</strong> - Kenal pasti masalah yang dihadapi oleh sasaran penonton dengan jelas.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-[#FE2C55] flex items-center justify-center text-white mr-2 mt-0.5 flex-shrink-0">3</div>
+                            <span><strong>Tunjukkan penyelesaian</strong> - Tunjukkan bagaimana produk menyelesaikan masalah dengan visual yang menarik.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-[#FE2C55] flex items-center justify-center text-white mr-2 mt-0.5 flex-shrink-0">4</div>
+                            <span><strong>Tunjukkan hasil</strong> - Berikan bukti nyata atau testimoni tentang keberkesanan produk.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-[#FE2C55] flex items-center justify-center text-white mr-2 mt-0.5 flex-shrink-0">5</div>
+                            <span><strong>CTA yang jelas</strong> - Akhiri dengan call-to-action yang spesifik dan mendesak.</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold text-lg mb-3">Elemen Skrip UGC yang Berkesan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h4 class="font-bold text-[#FE2C55]">Hook/Pembukaan</h4>
+                            <p class="text-gray-600">Menarik perhatian dalam 3 saat pertama dengan tuntutan yang mengejutkan atau soalan yang menarik.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h4 class="font-bold text-[#FE2C55]">Pernyataan Masalah</h4>
+                            <p class="text-gray-600">Kenal pasti pain point yang dihadapi oleh sasaran penonton dengan jelas dan relatable.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h4 class="font-bold text-[#FE2C55]">Penyelesaian</h4>
+                            <p class="text-gray-600">Perkenalkan produk sebagai penyelesaian untuk masalah yang telah disebutkan.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h4 class="font-bold text-[#FE2C55]">Ciri-ciri/Faedah</h4>
+                            <p class="text-gray-600">Jelaskan ciri-ciri utama dan faedah produk yang relevan dengan keperluan sasaran penonton.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h4 class="font-bold text-[#FE2C55]">Bukti Sosial</h4>
+                            <p class="text-gray-600">Berikan testimoni, penilaian, atau bukti lain yang menunjukkan kredibiliti produk.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h4 class="font-bold text-[#FE2C55]">Call to Action</h4>
+                            <p class="text-gray-600">Arahan yang jelas tentang tindakan yang perlu diambil oleh penonton (klik pautan, swipe up, dll).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden mt-8 text-center">
+            <div class="inline-flex items-center justify-center p-8 bg-white rounded-xl shadow-md glass-effect">
+                <div class="relative">
+                    <svg class="animate-spin h-12 w-12" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                </div>
+                <p class="ml-5 text-gray-700 font-medium text-lg">Membuat script TikTok kamu...</p>
+            </div>
+        </div>
+        
+        <!-- Result -->
+        <div id="resultBox" class="hidden mt-8 mb-12">
+            <div class="tiktok-card p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <h3 class="text-2xl font-bold mb-3 md:mb-0 text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-[#FE2C55]">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Video Script Timeline
+                    </h3>
+                    <div class="flex space-x-3">
+                        <button id="copyBtn" class="bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-all duration-300 flex items-center shadow hover:shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copy
+                        </button>
+                        <button id="downloadBtn" class="bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-all duration-300 flex items-center shadow hover:shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            CSV
+                        </button>
+                        <button id="regenerateBtn" class="bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-all duration-300 flex items-center shadow hover:shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <path d="M23 4v6h-6"></path>
+                                <path d="M1 20v-6h6"></path>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
+                                <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"></path>
+                            </svg>
+                            Regenerate
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto bg-gray-50 rounded-xl shadow-inner">
+                    <table class="timeline-table w-full">
+                        <thead class="bg-gray-100 border-b sticky top-0">
+                            <tr>
+                                <th class="py-3 px-4 w-24 text-gray-700 font-bold">Timestamp</th>
+                                <th class="py-3 px-4 w-32 text-gray-700 font-bold">Scene</th>
+                                <th class="py-3 px-4 text-gray-700 font-bold">Script/Action</th>
+                                <th class="py-3 px-4 w-32 text-gray-700 font-bold">Visual Elements</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scriptTable" class="divide-y divide-gray-200">
+                            <!-- Script content will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-6 text-center">
+                    <a href="https://roketmarket.com" target="_blank" class="inline-block bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white py-3 px-8 rounded-xl hover:shadow-lg transition-all duration-300 font-bold transform hover:-translate-y-1">
+                        Tempah Pembuatan Video di RoketMarket
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Key Management
+        let OPENAI_API_KEY = '';
+        let GEMINI_API_KEY = '';
+        let ACTIVE_API = ''; // 'openai' or 'gemini'
+        let selectedTrends = [];
+        
+        // Tab functionality
+        document.getElementById('tab-generator').addEventListener('click', function() {
+            switchTab('generator');
+        });
+        
+        document.getElementById('tab-trends').addEventListener('click', function() {
+            switchTab('trends');
+        });
+        
+        document.getElementById('tab-order').addEventListener('click', function() {
+            switchTab('order');
+        });
+        
+        document.getElementById('tab-bantuan').addEventListener('click', function() {
+            switchTab('bantuan');
+        });
+        
+        function switchTab(tabName) {
+            // Hide all content
+            document.getElementById('content-generator').classList.add('hidden');
+            document.getElementById('content-trends').classList.add('hidden');
+            document.getElementById('content-order').classList.add('hidden');
+            document.getElementById('content-bantuan').classList.add('hidden');
+            
+            // Remove active class from all tabs
+            document.getElementById('tab-generator').classList.remove('tab-active');
+            document.getElementById('tab-trends').classList.remove('tab-active');
+            document.getElementById('tab-order').classList.remove('tab-active');
+            document.getElementById('tab-bantuan').classList.remove('tab-active');
+            
+            document.getElementById('tab-generator').classList.add('text-gray-500');
+            document.getElementById('tab-trends').classList.add('text-gray-500');
+            document.getElementById('tab-order').classList.add('text-gray-500');
+            document.getElementById('tab-bantuan').classList.add('text-gray-500');
+            
+            // Show selected content and activate tab
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            document.getElementById('tab-' + tabName).classList.add('tab-active');
+            document.getElementById('tab-' + tabName).classList.remove('text-gray-500');
+        }
+        
+        // Handle TikTok trends
+        document.querySelectorAll('.trend-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                tag.classList.toggle('selected');
+                const trendText = tag.textContent.trim();
+                
+                if (tag.classList.contains('selected')) {
+                    if (!selectedTrends.includes(trendText)) {
+                        selectedTrends.push(trendText);
+                    }
+                } else {
+                    selectedTrends = selectedTrends.filter(t => t !== trendText);
+                }
+            });
+        });
+        
+        // Add custom trends from textarea
+        document.getElementById('customTrendInput').addEventListener('blur', () => {
+            const customTrends = document.getElementById('customTrendInput').value;
+            if (customTrends) {
+                const trendList = customTrends.split(',').map(t => t.trim()).filter(t => t);
+                
+                trendList.forEach(trend => {
+                    if (!selectedTrends.includes(trend)) {
+                        selectedTrends.push(trend);
+                        
+                        // Create visual tag for custom trend
+                        const trendTag = document.createElement('span');
+                        trendTag.className = 'trend-tag selected';
+                        trendTag.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                            ${trend}
+                        `;
+                        
+                        document.getElementById('trendTags').appendChild(trendTag);
+                        
+                        trendTag.addEventListener('click', () => {
+                            trendTag.classList.toggle('selected');
+                            if (trendTag.classList.contains('selected')) {
+                                if (!selectedTrends.includes(trend)) {
+                                    selectedTrends.push(trend);
+                                }
+                            } else {
+                                selectedTrends = selectedTrends.filter(t => t !== trend);
+                            }
+                        });
+                    }
+                });
+                
+                document.getElementById('customTrendInput').value = '';
+            }
+        });
+        
+        // Main script generation functionality
+        async function generateScript() {
+            try {
+                const product = document.getElementById('productInput').value;
+                const target = document.getElementById('targetInput').value;
+                const description = document.getElementById('descriptionInput').value;
+                const duration = document.getElementById('durationSelect').value;
+                const style = document.getElementById('styleSelect').value;
+
+                if (!product || !target || !description) {
+                    alert('Mohon lengkapi informasi produk, target market, dan deskripsi');
+                    return;
+                }
+
+                // Check if we have an active API
+                if (!ACTIVE_API) {
+                    alert('Harap hubungkan API Key terlebih dahulu');
+                    return;
+                }
+
+                const selectedElements = Array.from(document.querySelectorAll('.scriptElement:checked'))
+                    .map(el => el.value);
+
+                document.getElementById('generateBtn').disabled = true;
+                document.getElementById('generateBtn').classList.remove('pulse-animation');
+                document.getElementById('loadingState').classList.remove('hidden');
+                document.getElementById('resultBox').classList.add('hidden');
+
+                // Log untuk debugging
+                console.log(`Starting script generation with ${ACTIVE_API} API...`);
+
+                let trendsSection = '';
+                if (selectedTrends.length > 0) {
+                    trendsSection = `Tren TikTok yang digunakan: ${selectedTrends.join(', ')}
+Pastikan format video mengikuti tren tersebut dan integrasikan dengan natural ke dalam script.`;
+                }
+
+                const prompt = `Buat skrip video TikTok UGC untuk iklan dengan detail berikut:
+
+Produk: ${product}
+Sasaran: ${target}
+Penerangan: ${description}
+Tempoh: ${duration} saat
+Gaya: ${style}
+Elemen yang diperlukan: ${selectedElements.join(', ')}
+${trendsSection}
+
+Berikan skrip dalam format jadual dengan lajur:
+1. Timestamp (dalam saat, sesuaikan dengan tempoh keseluruhan ${duration} saat)
+2. Scene (nama bahagian/scene)
+3. Skrip/Tindakan (naratif dan tindakan yang dilakukan)
+4. Elemen Visual (teknik pengambilan gambar, sudut, atau kesan)
+
+Format output mestilah dalam bentuk jadual yang kemas dengan pembahagian masa yang seimbang. Fokus pada storyline yang menarik dan engaging untuk format TikTok. Gunakan Bahasa Malaysia yang semula jadi dan sesuai dengan sasaran penonton.`;
+
+                console.log(`Using ${ACTIVE_API} API for generation`);
+                let scriptContent;
+                
+                if (ACTIVE_API === 'openai') {
+                    // OpenAI API
+                    const requestBody = {
+                        "model": "gpt-3.5-turbo",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": prompt
+                            }
+                        ],
+                        "temperature": 0.7
+                    };
+                    
+                    console.log("OpenAI Request payload:", JSON.stringify(requestBody));
+                    
+                    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${OPENAI_API_KEY}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    console.log("OpenAI Response status:", response.status);
+                    
+                    const data = await response.json();
+                    console.log("OpenAI Response data:", data);
+                    
+                    if (!response.ok) {
+                        console.error("OpenAI API Error:", data);
+                        throw new Error(data.error?.message || 'Error calling OpenAI API');
+                    }
+                    
+                    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                        console.error("Unexpected OpenAI API response format:", data);
+                        throw new Error('Format respons API tidak sesuai yang diharapkan');
+                    }
+                    
+                    scriptContent = data.choices[0].message.content.trim();
+                    
+                } else if (ACTIVE_API === 'gemini') {
+                    // Gemini API via OpenRouter
+                    const requestBody = {
+                        "model": "deepseek/deepseek-chat-v3-0324:free",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": prompt
+                            }
+                        ]
+                    };
+                    
+                    console.log("Gemini Request payload:", JSON.stringify(requestBody));
+                    
+                    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${GEMINI_API_KEY}`,
+                            "HTTP-Referer": window.location.origin,
+                            "X-Title": "TikTok UGC Script Generator",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    console.log("Gemini Response status:", response.status);
+                    
+                    const data = await response.json();
+                    console.log("Gemini Response data:", data);
+                    
+                    if (!response.ok) {
+                        console.error("Gemini API Error:", data);
+                        throw new Error(data.error?.message || 'Error calling Gemini API via OpenRouter');
+                    }
+                    
+                    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                        console.error("Unexpected Gemini API response format:", data);
+                        throw new Error('Format respons API tidak sesuai yang diharapkan');
+                    }
+                    
+                    scriptContent = data.choices[0].message.content.trim();
+                    
+                } else {
+                    throw new Error('No API selected');
+                }
+                
+                console.log("Script content received:", scriptContent.substring(0, 100) + "...");
+                
+                // Store original script and API type for regeneration
+                window.lastPrompt = prompt;
+                window.lastApiType = ACTIVE_API;
+                
+                // Parse the response and create table rows
+                const rows = parseScriptContent(scriptContent);
+                document.getElementById('scriptTable').innerHTML = rows.join('');
+                document.getElementById('resultBox').classList.remove('hidden');
+                
+                // Scroll to results
+                document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
+                console.log("Script generation completed successfully");
+
+            } catch (error) {
+                console.error('Script generation error:', error);
+                let errorMessage = 'Terjadi kesalahan. ';
+                
+                if (error.message.includes('API key')) {
+                    errorMessage += 'API key tidak valid. ';
+                } else if (error.message.includes('rate limit')) {
+                    errorMessage += 'Batas rate API tercapai. Coba lagi nanti. ';
+                } else if (error.message.includes('429')) {
+                    errorMessage += 'Terlalu banyak permintaan. Coba lagi nanti. ';
+                } else {
+                    errorMessage += error.message || 'Silakan coba lagi.';
+                }
+                
+                alert(errorMessage);
+            } finally {
+                document.getElementById('generateBtn').disabled = false;
+                document.getElementById('loadingState').classList.add('hidden');
+            }
+        }
+
+        function parseScriptContent(content) {
+            console.log("Parsing script content:", content.substring(0, 200) + "...");
+            
+            try {
+                // Handle both markdown table format and text with pipe separators
+                const lines = content.split('\n');
+                console.log(`Found ${lines.length} lines in content`);
+                
+                // Filter out header and separator rows
+                const filteredRows = lines.filter(row => {
+                    row = row.trim();
+                    return row && 
+                           !row.startsWith('|---') && 
+                           !row.startsWith('---') && 
+                           !row.startsWith('Timestamp') &&
+                           !row.includes('Script/Action') &&
+                           row.includes('|');
+                });
+                
+                console.log(`After filtering, ${filteredRows.length} rows remain`);
+                
+                // Jika tidak ada baris yang valid, gunakan format sederhana
+                if (filteredRows.length === 0) {
+                    console.log("No valid table rows found, creating simple format");
+                    return [{
+                        row: `
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-mono text-gray-900" colspan="4">
+                                    ${content.replace(/\n/g, '<br>')}
+                                </td>
+                            </tr>
+                        `
+                    }];
+                }
+                
+                const mappedRows = filteredRows.map(row => {
+                    // Clean up markdown table formatting or split by pipe
+                    let cells = row.split('|').map(cell => cell.trim()).filter(Boolean);
+                    console.log(`Row "${row.substring(0, 30)}..." has ${cells.length} cells after splitting`);
+                    
+                    // Handle cases where there might not be exactly 4 columns
+                    while (cells.length < 4) cells.push('');
+                    
+                    // Take only first 4 columns if there are more
+                    cells = cells.slice(0, 4);
+                    
+                    // Format as HTML table row
+                    const [timestamp, scene, script, visual] = cells;
+                    return `
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 font-mono text-gray-900">${timestamp.replace(/s$/, '')}s</td>
+                            <td class="py-3 px-4 font-medium text-gray-900">${scene || ''}</td>
+                            <td class="py-3 px-4 text-gray-700">${script || ''}</td>
+                            <td class="py-3 px-4 text-gray-600 italic">${visual || ''}</td>
+                        </tr>
+                    `;
+                });
+                
+                console.log(`Successfully parsed ${mappedRows.length} rows`);
+                return mappedRows;
+            } catch (error) {
+                console.error("Error parsing content:", error);
+                return [`
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4 text-gray-700" colspan="4">
+                            Terjadi kesalahan saat memformat hasil. Berikut adalah output mentah:<br><br>
+                            ${content.replace(/\n/g, '<br>')}
+                        </td>
+                    </tr>
+                `];
+            }
+        }
+
+        // Regenerate script with the same parameters
+        async function regenerateScript() {
+            try {
+                if (!window.lastPrompt || !window.lastApiType) {
+                    alert('Tidak ada data untuk regenerasi. Silakan generate script baru.');
+                    return;
+                }
+
+                // Check if the previously used API is still connected
+                if ((window.lastApiType === 'openai' && !OPENAI_API_KEY) || 
+                    (window.lastApiType === 'gemini' && !GEMINI_API_KEY)) {
+                    alert(`API ${window.lastApiType} yang digunakan sebelumnya tidak lagi terhubung. Silakan hubungkan kembali.`);
+                    return;
+                }
+
+                document.getElementById('regenerateBtn').disabled = true;
+                document.getElementById('loadingState').classList.remove('hidden');
+
+                console.log(`Starting script regeneration with ${window.lastApiType} API...`);
+                let scriptContent;
+                
+                if (window.lastApiType === 'openai') {
+                    // OpenAI API regeneration
+                    const requestBody = {
+                        "model": "gpt-3.5-turbo",
+                        "messages": [
+                            {
+                                "role": "system",
+                                "content": "Anda adalah penulis skrip video TikTok UGC yang pakar dalam Bahasa Malaysia. Gunakan Bahasa Malaysia yang semula jadi dan sesuai dengan sasaran penonton."
+                            },
+                            {
+                                "role": "user",
+                                "content": window.lastPrompt + "\n\nBerikan variasi skrip baru yang berbeza dari sebelumnya dalam Bahasa Malaysia."
+                            }
+                        ],
+                        "temperature": 0.9
+                    };
+                    
+                    console.log("OpenAI Regeneration request payload:", JSON.stringify(requestBody));
+
+                    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${OPENAI_API_KEY}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    console.log("OpenAI Regeneration response status:", response.status);
+                    
+                    const data = await response.json();
+                    console.log("OpenAI Regeneration response data:", data);
+                    
+                    if (!response.ok) {
+                        console.error("OpenAI API Error during regeneration:", data);
+                        throw new Error(data.error?.message || 'Error calling OpenAI API');
+                    }
+                    
+                    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                        console.error("Unexpected OpenAI API response format during regeneration:", data);
+                        throw new Error('Format respons API tidak sesuai yang diharapkan');
+                    }
+                    
+                    scriptContent = data.choices[0].message.content.trim();
+                    
+                } else if (window.lastApiType === 'gemini') {
+                    // Gemini API regeneration via OpenRouter
+                    const requestBody = {
+                        "model": "deepseek/deepseek-chat-v3-0324:free",
+                        "messages": [
+                            {
+                                "role": "system",
+                                "content": "Anda adalah penulis skrip video TikTok UGC yang pakar dalam Bahasa Malaysia. Gunakan Bahasa Malaysia yang semula jadi dan sesuai dengan sasaran penonton."
+                            },
+                            {
+                                "role": "user",
+                                "content": window.lastPrompt + "\n\nBerikan variasi skrip baru yang berbeza dari sebelumnya dalam Bahasa Malaysia."
+                            }
+                        ]
+                    };
+                    
+                    console.log("Gemini Regeneration request payload:", JSON.stringify(requestBody));
+
+                    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${GEMINI_API_KEY}`,
+                            "HTTP-Referer": window.location.origin,
+                            "X-Title": "TikTok UGC Script Generator",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    console.log("Gemini Regeneration response status:", response.status);
+                    
+                    const data = await response.json();
+                    console.log("Gemini Regeneration response data:", data);
+                    
+                    if (!response.ok) {
+                        console.error("Gemini API Error during regeneration:", data);
+                        throw new Error(data.error?.message || 'Error calling Gemini API via OpenRouter');
+                    }
+                    
+                    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                        console.error("Unexpected Gemini API response format during regeneration:", data);
+                        throw new Error('Format respons API tidak sesuai yang diharapkan');
+                    }
+                    
+                    scriptContent = data.choices[0].message.content.trim();
+                    
+                } else {
+                    throw new Error('Invalid API type for regeneration');
+                }
+                
+                console.log("Regenerated script content:", scriptContent.substring(0, 100) + "...");
+                
+                // Parse the response and create table rows
+                const rows = parseScriptContent(scriptContent);
+                document.getElementById('scriptTable').innerHTML = rows.join('');
+                console.log("Script regeneration completed successfully");
+
+            } catch (error) {
+                console.error('Script regeneration error:', error);
+                let errorMessage = 'Terjadi kesalahan saat regenerasi. ';
+                
+                if (error.message.includes('API key')) {
+                    errorMessage += 'API key tidak valid. ';
+                } else if (error.message.includes('rate limit')) {
+                    errorMessage += 'Batas rate API tercapai. Coba lagi nanti. ';
+                } else if (error.message.includes('429')) {
+                    errorMessage += 'Terlalu banyak permintaan. Coba lagi nanti. ';
+                } else {
+                    errorMessage += error.message || 'Silakan coba lagi.';
+                }
+                
+                alert(errorMessage);
+            } finally {
+                document.getElementById('regenerateBtn').disabled = false;
+                document.getElementById('loadingState').classList.add('hidden');
+            }
+        }
+
+        // Copy functionality
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const scriptContent = Array.from(document.querySelectorAll('#scriptTable tr'))
+                .map(row => Array.from(row.cells).map(cell => cell.textContent.trim()).join('\t'))
+                .join('\n');
+            
+            navigator.clipboard.writeText(scriptContent);
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Copied!
+            `;
+            setTimeout(() => {
+                copyBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy
+                `;
+            }, 2000);
+        });
+
+        // Download as CSV
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const scriptContent = Array.from(document.querySelectorAll('#scriptTable tr'))
+                .map(row => Array.from(row.cells).map(cell => `"${cell.textContent.trim()}"`).join(','))
+                .join('\n');
+            
+            const headers = 'Timestamp,Scene,Script/Action,Visual Elements\n';
+            const csv = headers + scriptContent;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'tiktok_ugc_script.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        // API Key Management Functions
+        function saveApiKey(type, key) {
+            if (type === 'openai') {
+                localStorage.setItem('tiktok_ugc_openai_api_key', key);
+                OPENAI_API_KEY = key;
+            } else if (type === 'gemini') {
+                localStorage.setItem('tiktok_ugc_gemini_api_key', key);
+                GEMINI_API_KEY = key;
+            }
+            
+            // Set as active API
+            setActiveApi(type);
+        }
+        
+        function getStoredApiKey(type) {
+            if (type === 'openai') {
+                return localStorage.getItem('tiktok_ugc_openai_api_key');
+            } else if (type === 'gemini') {
+                return localStorage.getItem('tiktok_ugc_gemini_api_key');
+            }
+            return null;
+        }
+        
+        function setActiveApi(type) {
+            ACTIVE_API = type;
+            localStorage.setItem('tiktok_ugc_active_api', type);
+            
+            // Update the UI to show which API is active
+            const activeApiInfo = document.getElementById('active-api-info');
+            const activeApiName = document.getElementById('active-api-name');
+            
+            if (type) {
+                activeApiInfo.classList.remove('hidden');
+                activeApiName.textContent = type === 'openai' ? 'OpenAI' : 'Gemini (OpenRouter)';
+            } else {
+                activeApiInfo.classList.add('hidden');
+            }
+            
+            // Enable or disable the generate button based on whether any API is active
+            const generateBtn = document.getElementById('generateBtn');
+            const disabledMessage = document.getElementById('generateBtnDisabledMessage');
+            
+            if (type) {
+                generateBtn.disabled = false;
+                disabledMessage.style.display = "none";
+            } else {
+                generateBtn.disabled = true;
+                disabledMessage.style.display = "block";
+            }
+        }
+        
+        async function validateOpenAIApiKey(key) {
+            try {
+                const response = await fetch("https://api.openai.com/v1/models", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${key}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+                
+                if (response.ok) {
+                    return { valid: true, message: "API key terverifikasi" };
+                } else {
+                    const data = await response.json();
+                    return { 
+                        valid: false, 
+                        message: data.error?.message || "API key tidak valid" 
+                    };
+                }
+            } catch (error) {
+                console.error("Error validating API key:", error);
+                return { 
+                    valid: false, 
+                    message: "Gagal memverifikasi API key. Periksa koneksi internet Anda."
+                };
+            }
+        }
+        
+        async function validateGeminiApiKey(key) {
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/models", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${key}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+                
+                if (response.ok) {
+                    // Additional check to make sure Gemini model is available
+                    const data = await response.json();
+                    const geminiModel = data.data.find(model => 
+                        model.id.includes("gemini-2.0-flash-lite")
+                    );
+                    
+                    if (geminiModel) {
+                        return { valid: true, message: "API key terverifikasi, Gemini tersedia" };
+                    } else {
+                        return { 
+                            valid: false, 
+                            message: "API key valid tetapi model Gemini tidak tersedia" 
+                        };
+                    }
+                } else {
+                    const data = await response.json();
+                    return { 
+                        valid: false, 
+                        message: data.error?.message || "API key tidak valid" 
+                    };
+                }
+            } catch (error) {
+                console.error("Error validating Gemini API key:", error);
+                return { 
+                    valid: false, 
+                    message: "Gagal memverifikasi API key. Periksa koneksi internet Anda."
+                };
+            }
+        }
+        
+        function updateConnectionStatus(type, isConnected, message = "") {
+            const statusId = type === 'openai' ? 'openai-status-badge' : 'gemini-status-badge';
+            const statusBadge = document.getElementById(statusId);
+            
+            if (isConnected) {
+                statusBadge.className = "bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full";
+                statusBadge.textContent = "Bersambung";
+            } else {
+                statusBadge.className = "bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full";
+                statusBadge.textContent = "Tidak Bersambung";
+                
+                if (message) {
+                    console.log(`Connection error (${type}): ${message}`);
+                }
+            }
+        }
+        
+        async function connectApiKey(type) {
+            const inputId = type === 'openai' ? 'openai-api-key-input' : 'gemini-api-key-input';
+            const btnId = type === 'openai' ? 'openai-connect-btn' : 'gemini-connect-btn';
+            
+            const apiKeyInput = document.getElementById(inputId);
+            const key = apiKeyInput.value.trim();
+            
+            if (!key) {
+                alert(`Harap masukkan API key ${type === 'openai' ? 'OpenAI' : 'OpenRouter'} Anda`);
+                return;
+            }
+            
+            // Update UI to show connection in progress
+            const connectBtn = document.getElementById(btnId);
+            const originalBtnText = connectBtn.textContent;
+            connectBtn.textContent = "Menyambung...";
+            connectBtn.disabled = true;
+            
+            try {
+                let result;
+                
+                if (type === 'openai') {
+                    result = await validateOpenAIApiKey(key);
+                } else {
+                    result = await validateGeminiApiKey(key);
+                }
+                
+                if (result.valid) {
+                    saveApiKey(type, key);
+                    updateConnectionStatus(type, true);
+                    alert(`Berjaya bersambung dengan API ${type === 'openai' ? 'OpenAI' : 'Gemini (OpenRouter)'}`);
+                    
+                    // Hide the key after successful connection
+                    apiKeyInput.value = "••••••••••••••••••••••••••••••";
+                } else {
+                    updateConnectionStatus(type, false, result.message);
+                    alert(`Gagal bersambung: ${result.message}`);
+                }
+            } catch (error) {
+                console.error(`Connection error (${type}):`, error);
+                updateConnectionStatus(type, false, "Terjadi error saat menghubungkan");
+                alert(`Ralat berlaku semasa cuba bersambung ke API ${type === 'openai' ? 'OpenAI' : 'Gemini (OpenRouter)'}`);
+            } finally {
+                connectBtn.textContent = originalBtnText;
+                connectBtn.disabled = false;
+            }
+        }
+        
+        // Tab switching functionality for API types
+        function switchApiTab(tabName) {
+            // Hide all content
+            document.querySelectorAll('.api-input-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.getElementById('tab-openai').classList.remove('tab-active');
+            document.getElementById('tab-gemini').classList.remove('tab-active');
+            
+            document.getElementById('tab-openai').classList.add('text-gray-500');
+            document.getElementById('tab-gemini').classList.add('text-gray-500');
+            
+            // Show selected content and activate tab
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('tab-active');
+            document.getElementById(`tab-${tabName}`).classList.remove('text-gray-500');
+        }
+        
+        // Initialize API Key from Local Storage
+        async function initializeApiKeys() {
+            // Try to load the last active API setting
+            const lastActiveApi = localStorage.getItem('tiktok_ugc_active_api');
+            let activeApiSet = false;
+            
+            // Initialize OpenAI API key
+            const storedOpenAIKey = getStoredApiKey('openai');
+            if (storedOpenAIKey) {
+                document.getElementById('openai-api-key-input').value = "••••••••••••••••••••••••••••••";
+                
+                try {
+                    const result = await validateOpenAIApiKey(storedOpenAIKey);
+                    
+                    if (result.valid) {
+                        OPENAI_API_KEY = storedOpenAIKey;
+                        updateConnectionStatus('openai', true);
+                        console.log("Successfully initialized with stored OpenAI API key");
+                        
+                        // Set as active if it was the last active API or if no active API yet
+                        if (lastActiveApi === 'openai' || !activeApiSet) {
+                            setActiveApi('openai');
+                            activeApiSet = true;
+                        }
+                    } else {
+                        updateConnectionStatus('openai', false, "API key tersimpan tidak valid");
+                    }
+                } catch (error) {
+                    console.error("Error validating stored OpenAI API key:", error);
+                    updateConnectionStatus('openai', false, "Gagal memverifikasi API key tersimpan");
+                }
+            }
+            
+            // Initialize Gemini API key
+            const storedGeminiKey = getStoredApiKey('gemini');
+            if (storedGeminiKey) {
+                document.getElementById('gemini-api-key-input').value = "••••••••••••••••••••••••••••••";
+                
+                try {
+                    const result = await validateGeminiApiKey(storedGeminiKey);
+                    
+                    if (result.valid) {
+                        GEMINI_API_KEY = storedGeminiKey;
+                        updateConnectionStatus('gemini', true);
+                        console.log("Successfully initialized with stored Gemini API key");
+                        
+                        // Set as active if it was the last active API or if no active API yet
+                        if (lastActiveApi === 'gemini' || !activeApiSet) {
+                            setActiveApi('gemini');
+                            activeApiSet = true;
+                        }
+                    } else {
+                        updateConnectionStatus('gemini', false, "API key tersimpan tidak valid");
+                    }
+                } catch (error) {
+                    console.error("Error validating stored Gemini API key:", error);
+                    updateConnectionStatus('gemini', false, "Gagal memverifikasi API key tersimpan");
+                }
+            }
+            
+            // If no active API was set, make sure the button stays disabled
+            if (!activeApiSet) {
+                setActiveApi('');
+            }
+            
+            // If last active API was Gemini, switch to Gemini tab
+            if (lastActiveApi === 'gemini') {
+                switchApiTab('gemini');
+            }
+        }
+        
+        // Initialize event listeners
+        function initializeEventListeners() {
+            // Tab switching
+            document.getElementById('tab-openai').addEventListener('click', function() {
+                switchApiTab('openai');
+            });
+            
+            document.getElementById('tab-gemini').addEventListener('click', function() {
+                switchApiTab('gemini');
+            });
+            
+            // API connection buttons
+            document.getElementById('openai-connect-btn').addEventListener('click', function() {
+                connectApiKey('openai');
+            });
+            
+            document.getElementById('gemini-connect-btn').addEventListener('click', function() {
+                connectApiKey('gemini');
+            });
+            
+            // Key press events for API inputs
+            document.getElementById('openai-api-key-input').addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    connectApiKey('openai');
+                }
+            });
+            
+            document.getElementById('gemini-api-key-input').addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    connectApiKey('gemini');
+                }
+            });
+            
+            // Script generation buttons
+            document.getElementById('generateBtn').addEventListener('click', generateScript);
+            document.getElementById('regenerateBtn').addEventListener('click', regenerateScript);
+            
+            // Prevent form submission on Enter key for other inputs
+            document.querySelectorAll('input:not(#openai-api-key-input):not(#gemini-api-key-input), textarea').forEach(input => {
+                input.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter' && input.tagName !== 'TEXTAREA') {
+                        event.preventDefault();
+                    }
+                });
+            });
+        }
+        
+        // Execute initialization on page load
+        window.addEventListener('DOMContentLoaded', async function() {
+            await initializeApiKeys();
+            initializeEventListeners();
+        });
+    </script>
+</body>
+</html>
